@@ -4,6 +4,7 @@
     "next/typescript",
     "plugin:prettier/recommended"
   ],
+  "plugins": ["prettier"],
   "rules": {
     "@typescript-eslint/no-explicit-any": "off"
   }
