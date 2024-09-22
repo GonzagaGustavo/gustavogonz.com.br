@@ -1,6 +1,21 @@
 import { Client } from 'pg';
 
-export const query = async (queryObject: any) => {
+const query = async (queryObject: any) => {
+  let client;
+
+  try {
+    client = await getNewClient();
+
+    return await client.query(queryObject);
+  } catch (err) {
+    console.error(err);
+    throw err;
+  } finally {
+    await client?.end();
+  }
+};
+
+async function getNewClient() {
   const client = new Client({
     host: process.env.POSTGRES_HOST,
     port: Number(process.env.POSTGRES_PORT),
@@ -9,14 +24,10 @@ export const query = async (queryObject: any) => {
     database: process.env.POSTGRES_DB,
   });
 
-  try {
-    await client.connect();
+  await client.connect();
 
-    return client.query(queryObject);
-  } catch (err) {
-    console.error(err);
-    throw err;
-  } finally {
-    await client.end();
-  }
-};
+  return client;
+}
+
+const database = { query, getNewClient };
+export default database;

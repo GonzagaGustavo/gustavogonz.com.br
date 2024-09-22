@@ -10,8 +10,8 @@
     "services:up": "docker compose -f src/infra/compose.yaml up -d",
     "services:stop": "docker compose -f src/infra/compose.yaml stop",
     "services:down": "docker compose -f src/infra/compose.yaml down",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "jest --runInBand",
+    "test:watch": "jest --watch --runInBand",
     "migration:create": "node-pg-migrate -m src/infra/migrations create",
     "migration:up": "node-pg-migrate -m src/infra/migrations --envPath .env.development up"
   },

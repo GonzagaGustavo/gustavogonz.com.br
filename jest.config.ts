@@ -1,19 +1,20 @@
 import type { Config } from 'jest';
 import nextJest from 'next/jest.js';
 
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.development' });
+
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
-  dir: '.',
+  dir: './',
 });
 
 // Add any custom config to be passed to Jest
 const config: Config = {
-  coverageProvider: 'v8',
-  testEnvironment: 'jest-environment-jsdom',
-  preset: 'ts-jest',
-  globals: {
-    fetch: global.fetch,
+  moduleNameMapper: {
+    '^~/(.*)$': ['<rootDir>/src/$1'],
   },
+
   // Add more setup options before each test is run
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
