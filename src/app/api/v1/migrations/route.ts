@@ -1,6 +1,6 @@
 import migrationRunner, { RunnerOption } from 'node-pg-migrate';
 import { NextResponse } from 'next/server';
-import { join } from 'node:path';
+import { resolve } from 'node:path';
 import database from '~/infra/database';
 import { Client } from 'pg';
 
@@ -36,7 +36,7 @@ function getMigrationConfigByMethod(
   const config: RunnerOption = {
     dbClient,
     dryRun: true,
-    dir: join('src', 'infra', 'migrations'),
+    dir: resolve('src', 'infra', 'migrations'),
     direction: 'up',
     verbose: true,
     migrationsTable: 'pgmigrations',
