@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm run services:up && next dev",
+    "dev": "pnpm run services:up && pnpm run wait-for-postgres && pnpm run migration:up && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -13,10 +13,12 @@
     "test": "jest --runInBand",
     "test:watch": "jest --watch --runInBand",
     "migration:create": "node-pg-migrate -m src/infra/migrations create",
-    "migration:up": "node-pg-migrate -m src/infra/migrations --envPath .env.development up"
+    "migration:up": "node-pg-migrate -m src/infra/migrations --envPath .env.development up",
+    "wait-for-postgres": "ts-node src/infra/scripts/wait-for-postgres.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
+    "dotenv-expand": "^11.0.6",
     "next": "14.2.12",
     "node-pg-migrate": "^7.6.1",
     "pg": "^8.13.0",
@@ -40,6 +42,7 @@
     "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^3.4.1",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }
