@@ -1,4 +1,9 @@
-import { describe, expect, test } from '@jest/globals';
+import { beforeAll, describe, expect, test } from '@jest/globals';
+import orchestrator from '~/../tests/orchestrator';
+
+beforeAll(async () => {
+  await orchestrator.waitForAllServices();
+});
 
 describe('status tests', () => {
   test('should return status code 200', async () => {

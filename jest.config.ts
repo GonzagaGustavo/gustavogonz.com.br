@@ -14,6 +14,7 @@ const config: Config = {
   moduleNameMapper: {
     '^~/(.*)$': ['<rootDir>/src/$1'],
   },
+  testTimeout: 60000,
 
   // Add more setup options before each test is run
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
