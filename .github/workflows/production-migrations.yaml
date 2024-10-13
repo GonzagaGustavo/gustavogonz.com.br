@@ -20,5 +20,4 @@ jobs:
 
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          PGSSLMODE: require
       - run: pnpm migration:up:prod
