@@ -28,6 +28,8 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@jest/globals": "^29.7.0",
     "@types/async-retry": "^1.4.9",
     "@types/node": "^20.16.11",
