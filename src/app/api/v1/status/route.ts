@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import database from '~/infra/database';
 
-export const dynamic = 'force-dynamic';
-
 export async function GET() {
   const updated_at = new Date().toISOString();
 
