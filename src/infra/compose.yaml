@@ -1,3 +1,4 @@
+name: gustavogonz.com.br
 services:
   database:
     container_name: postgres-dev
