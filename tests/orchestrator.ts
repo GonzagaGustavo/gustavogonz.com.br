@@ -4,7 +4,6 @@ async function waitForAllServices() {
   await waitForWebServer();
 
   async function waitForWebServer() {
-    process.stdout.write('\n🔴 Waiting for web server\n');
     return retry(fetchStatusPage, { retries: 100, maxTimeout: 1000 });
 
     async function fetchStatusPage() {
