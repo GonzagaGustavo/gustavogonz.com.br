@@ -1,10 +1,9 @@
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import orchestrator from '../../../../orchestrator';
-import database from '~/infra/database';
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
-  await database.query('drop schema public cascade; create schema public;');
+  await orchestrator.clearDatabase();
 });
 
 describe('POST /api/v1/migrations', () => {
