@@ -32,4 +32,4 @@ jobs:
             echo "DATABASE_URL is set!"
           fi
 
-      - run: pnpm migration:up:prod
+      - run: pnpm migrations:up:prod
