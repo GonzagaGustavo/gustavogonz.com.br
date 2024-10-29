@@ -1,4 +1,11 @@
-import { expect, test } from '@jest/globals';
+import { beforeAll, expect, test } from '@jest/globals';
+import orchestrator from '../../../../orchestrator';
+import database from '~/infra/database';
+
+beforeAll(async () => {
+  await orchestrator.waitForAllServices();
+  await database.query('drop schema public cascade; create schema public;');
+});
 
 test('POST to /api/v1/migrations should return 200', async () => {
   const res = await fetch('http://localhost:3000/api/v1/migrations', {

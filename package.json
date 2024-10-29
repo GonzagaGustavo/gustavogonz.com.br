@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm run services:up && pnpm run services:wait:database && pnpm run migration:up && next dev --turbopack && pnpm services:stop",
+    "dev": "pnpm run services:up && pnpm run services:wait:database && pnpm run migrations:up && next dev --turbopack && pnpm services:stop",
     "services:up": "docker compose -f src/infra/compose.yaml up -d",
     "services:stop": "docker compose -f src/infra/compose.yaml stop",
     "services:down": "docker compose -f src/infra/compose.yaml down",
@@ -14,7 +14,7 @@
     "lint": "next lint --dir .",
     "test": "pnpm run services:up && concurrently -n next,jest --hide next -k -s command-jest --prefix none \"next dev\" \"jest --runInBand\"",
     "posttest": "pnpm run services:stop",
-    "test:watch": "jest --watch --runInBand",
+    "test:watch": "jest --watchAll --runInBand --verbose",
     "build": "next build",
     "start": "next start",
     "prepare": "husky",
