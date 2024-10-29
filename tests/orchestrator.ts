@@ -1,10 +1,10 @@
 import retry from 'async-retry';
+import database from '~/infra/database';
 
 async function waitForAllServices() {
   await waitForWebServer();
 
   async function waitForWebServer() {
-    process.stdout.write('\n🔴 Waiting for web server\n');
     return retry(fetchStatusPage, { retries: 100, maxTimeout: 1000 });
 
     async function fetchStatusPage() {
@@ -17,8 +17,13 @@ async function waitForAllServices() {
   }
 }
 
+async function clearDatabase() {
+  await database.query('drop schema public cascade; create schema public;');
+}
+
 const orchestrator = {
   waitForAllServices,
+  clearDatabase,
 };
 
 export default orchestrator;
