@@ -7,7 +7,7 @@ let date = Date.now();
 function checkPostgres() {
   exec('docker exec postgres-dev pg_isready --host localhost', handleReturn);
 
-  function handleReturn(_err: any, stdout: string) {
+  function handleReturn(_err: unknown, stdout: string) {
     function makeLoading() {
       if (Date.now() - date > 200) {
         const P = ['\\', '|', '/', '-'];

@@ -1,6 +1,6 @@
-import { Client } from 'pg';
+import { Client, QueryConfig } from 'pg';
 
-const query = async (queryObject: any) => {
+const query = async (queryObject: QueryConfig | string) => {
   let client;
 
   try {
