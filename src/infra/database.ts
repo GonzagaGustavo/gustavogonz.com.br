@@ -8,6 +8,7 @@ const query = async (queryObject: QueryConfig | string) => {
 
     return await client.query(queryObject);
   } catch (err) {
+    console.log('\n Error inside catch database.ts:');
     console.error(err);
     throw err;
   } finally {
