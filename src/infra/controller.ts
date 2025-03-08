@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { InternalServerError, MethodNotAllowedError } from '~/infra/errors';
+import {
+  InternalServerError,
+  MethodNotAllowedError,
+  ValidationError,
+} from '~/infra/errors';
 
 function onNoMatchHandler(req: NextApiRequest, res: NextApiResponse) {
   const publicErrorObject = new MethodNotAllowedError();
@@ -10,6 +14,10 @@ function onNoMatchHandler(req: NextApiRequest, res: NextApiResponse) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onErrorHandler(error: any, req: NextApiRequest, res: NextApiResponse) {
+  if (error instanceof ValidationError) {
+    return res.status(error.statusCode).json(error);
+  }
+
   const publicErrorObject = new InternalServerError({
     statusCode: error.statusCode,
     cause: error,
