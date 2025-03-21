@@ -1,5 +1,36 @@
 import database from '~/infra/database';
-import { ValidationError } from '~/infra/errors';
+import { NotFoundError, ValidationError } from '~/infra/errors';
+
+async function findOneByUsername(username: string) {
+  const userFound = await runSelectQuery(username);
+
+  return userFound;
+
+  async function runSelectQuery(username: string) {
+    const results = await database.query({
+      text: `
+        SELECT
+          *
+        FROM
+          users
+        WHERE
+          LOWER(username) = LOWER($1)
+        LIMIT
+          1
+        ;`,
+      values: [username],
+    });
+
+    if (results.rowCount === 0) {
+      throw new NotFoundError({
+        message: 'O username informado não foi encontrado no sistema.',
+        action: 'Verifique se o username está digitado corretamente.',
+      });
+    }
+
+    return results.rows[0];
+  }
+}
 
 type CreateUserInput = {
   username: string;
@@ -28,7 +59,7 @@ async function create(userInputValues: CreateUserInput) {
       values: [email],
     });
 
-    if (results.rowCount && results.rowCount > 0) {
+    if (results.rowCount !== null && results.rowCount > 0) {
       throw new ValidationError({
         message: 'O email informado já está sendo utilizado.',
         action: 'Utilize outro email para realizar o cadastro.',
@@ -49,7 +80,7 @@ async function create(userInputValues: CreateUserInput) {
       values: [username],
     });
 
-    if (results.rowCount && results.rowCount > 0) {
+    if (results.rowCount !== null && results.rowCount > 0) {
       throw new ValidationError({
         message: 'O username informado já está sendo utilizado.',
         action: 'Utilize outro username para realizar o cadastro.',
@@ -78,6 +109,6 @@ async function create(userInputValues: CreateUserInput) {
   }
 }
 
-const user = { create };
+const user = { create, findOneByUsername };
 
 export default user;

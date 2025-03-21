@@ -8,7 +8,7 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe('POST /api/v1/user', () => {
+describe('POST /api/v1/users', () => {
   describe('Anonymous user', () => {
     test('With unique and valid data', async () => {
       const res = await fetch('http://localhost:3000/api/v1/users', {
