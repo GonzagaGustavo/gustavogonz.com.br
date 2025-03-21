@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import {
   InternalServerError,
   MethodNotAllowedError,
+  NotFoundError,
   ValidationError,
 } from '~/infra/errors';
 
@@ -14,7 +15,7 @@ function onNoMatchHandler(req: NextApiRequest, res: NextApiResponse) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onErrorHandler(error: any, req: NextApiRequest, res: NextApiResponse) {
-  if (error instanceof ValidationError) {
+  if (error instanceof ValidationError || error instanceof NotFoundError) {
     return res.status(error.statusCode).json(error);
   }
 
