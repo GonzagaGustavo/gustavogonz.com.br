@@ -9,7 +9,7 @@ const defaultMigrationOptions: Omit<RunnerOption, 'dbClient'> = {
   dryRun: true,
   dir: resolve('src', 'infra', 'migrations'),
   direction: 'up',
-  verbose: true,
+  log: () => {},
   migrationsTable: 'pgmigrations',
 };
 
