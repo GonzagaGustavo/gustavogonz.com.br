@@ -1,6 +1,8 @@
 import { version as uuidVersion } from 'uuid';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import orchestrator from '../../../../orchestrator';
+import user from '~/models/user';
+import password from '~/models/password';
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -31,7 +33,7 @@ describe('POST /api/v1/users', () => {
         id: resBody.id,
         username: 'gustavo',
         email: 'contato@gustavogonz.com.br',
-        password: 'senha123',
+        password: resBody.password,
         created_at: resBody.created_at,
         updated_at: resBody.updated_at,
       });
@@ -39,6 +41,19 @@ describe('POST /api/v1/users', () => {
       expect(uuidVersion(resBody.id)).toBe(4);
       expect(Date.parse(resBody.created_at)).not.toBeNaN();
       expect(Date.parse(resBody.updated_at)).not.toBeNaN();
+
+      const userInDatabase = await user.findOneByUsername('gustavo');
+      const correctPasswordMatch = await password.compare(
+        'senha123',
+        userInDatabase.password,
+      );
+      const incorrectPasswordMatch = await password.compare(
+        'SenhaErrada',
+        userInDatabase.password,
+      );
+
+      expect(correctPasswordMatch).toBe(true);
+      expect(incorrectPasswordMatch).toBe(false);
     });
 
     test("With duplicated 'email'", async () => {

@@ -1,3 +1,6 @@
+import user from '~/models/user';
+import password from '~/models/password';
+
 import { version as uuidVersion } from 'uuid';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import orchestrator from '~/../tests/orchestrator';
@@ -35,7 +38,7 @@ describe('GET /api/v1/users/[username]', () => {
         id: res2Body.id,
         username: 'MesmoCase',
         email: 'mesmo.case@gustavogonz.com.br',
-        password: 'senha123',
+        password: res2Body.password,
         created_at: res2Body.created_at,
         updated_at: res2Body.updated_at,
       });
@@ -43,6 +46,19 @@ describe('GET /api/v1/users/[username]', () => {
       expect(uuidVersion(res2Body.id)).toBe(4);
       expect(Date.parse(res2Body.created_at)).not.toBeNaN();
       expect(Date.parse(res2Body.updated_at)).not.toBeNaN();
+
+      const userInDatabase = await user.findOneByUsername('MesmoCase');
+      const correctPasswordMatch = await password.compare(
+        'senha123',
+        userInDatabase.password,
+      );
+      const incorrectPasswordMatch = await password.compare(
+        'SenhaErrada',
+        userInDatabase.password,
+      );
+
+      expect(correctPasswordMatch).toBe(true);
+      expect(incorrectPasswordMatch).toBe(false);
     });
 
     test('With case mismatch', async () => {
@@ -72,7 +88,7 @@ describe('GET /api/v1/users/[username]', () => {
         id: res2Body.id,
         username: 'CaseDiferente',
         email: 'case.diferente@gustavogonz.com.br',
-        password: 'senha123',
+        password: res2Body.password,
         created_at: res2Body.created_at,
         updated_at: res2Body.updated_at,
       });
