@@ -42,7 +42,7 @@ async function findOneByUsername(username: string): Promise<User> {
   }
 }
 
-type CreateUserInput = {
+export type CreateUserInput = {
   username: string;
   email: string;
   password: string;
