@@ -14,38 +14,30 @@ beforeAll(async () => {
 describe('GET /api/v1/users/[username]', () => {
   describe('Anonymous user', () => {
     test('With exact case match', async () => {
-      const res1 = await fetch('http://localhost:3000/api/v1/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: 'MesmoCase',
-          email: 'mesmo.case@gustavogonz.com.br',
-          password: 'senha123',
-        }),
-      });
-
-      expect(res1.status).toBe(201);
-
-      const res2 = await fetch('http://localhost:3000/api/v1/users/MesmoCase');
-
-      expect(res2.status).toBe(200);
-
-      const res2Body = await res2.json();
-
-      expect(res2Body).toEqual({
-        id: res2Body.id,
+      await orchestrator.createUser({
         username: 'MesmoCase',
         email: 'mesmo.case@gustavogonz.com.br',
-        password: res2Body.password,
-        created_at: res2Body.created_at,
-        updated_at: res2Body.updated_at,
+        password: 'senha123',
       });
 
-      expect(uuidVersion(res2Body.id)).toBe(4);
-      expect(Date.parse(res2Body.created_at)).not.toBeNaN();
-      expect(Date.parse(res2Body.updated_at)).not.toBeNaN();
+      const res = await fetch('http://localhost:3000/api/v1/users/MesmoCase');
+
+      expect(res.status).toBe(200);
+
+      const resBody = await res.json();
+
+      expect(resBody).toEqual({
+        id: resBody.id,
+        username: 'MesmoCase',
+        email: 'mesmo.case@gustavogonz.com.br',
+        password: resBody.password,
+        created_at: resBody.created_at,
+        updated_at: resBody.updated_at,
+      });
+
+      expect(uuidVersion(resBody.id)).toBe(4);
+      expect(Date.parse(resBody.created_at)).not.toBeNaN();
+      expect(Date.parse(resBody.updated_at)).not.toBeNaN();
 
       const userInDatabase = await user.findOneByUsername('MesmoCase');
       const correctPasswordMatch = await password.compare(
@@ -62,40 +54,32 @@ describe('GET /api/v1/users/[username]', () => {
     });
 
     test('With case mismatch', async () => {
-      const res1 = await fetch('http://localhost:3000/api/v1/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: 'CaseDiferente',
-          email: 'case.diferente@gustavogonz.com.br',
-          password: 'senha123',
-        }),
+      await orchestrator.createUser({
+        username: 'CaseDiferente',
+        email: 'case.diferente@gustavogonz.com.br',
+        password: 'senha123',
       });
 
-      expect(res1.status).toBe(201);
-
-      const res2 = await fetch(
+      const res = await fetch(
         'http://localhost:3000/api/v1/users/casediferente',
       );
 
-      expect(res2.status).toBe(200);
+      expect(res.status).toBe(200);
 
-      const res2Body = await res2.json();
+      const resBody = await res.json();
 
-      expect(res2Body).toEqual({
-        id: res2Body.id,
+      expect(resBody).toEqual({
+        id: resBody.id,
         username: 'CaseDiferente',
         email: 'case.diferente@gustavogonz.com.br',
-        password: res2Body.password,
-        created_at: res2Body.created_at,
-        updated_at: res2Body.updated_at,
+        password: resBody.password,
+        created_at: resBody.created_at,
+        updated_at: resBody.updated_at,
       });
 
-      expect(uuidVersion(res2Body.id)).toBe(4);
-      expect(Date.parse(res2Body.created_at)).not.toBeNaN();
-      expect(Date.parse(res2Body.updated_at)).not.toBeNaN();
+      expect(uuidVersion(resBody.id)).toBe(4);
+      expect(Date.parse(resBody.created_at)).not.toBeNaN();
+      expect(Date.parse(resBody.updated_at)).not.toBeNaN();
     });
 
     test('With nonexistent username', async () => {
