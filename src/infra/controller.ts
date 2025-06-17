@@ -4,6 +4,7 @@ import {
   InternalServerError,
   MethodNotAllowedError,
   NotFoundError,
+  UnauthorizedError,
   ValidationError,
 } from '~/infra/errors';
 
@@ -15,12 +16,15 @@ function onNoMatchHandler(req: NextApiRequest, res: NextApiResponse) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onErrorHandler(error: any, req: NextApiRequest, res: NextApiResponse) {
-  if (error instanceof ValidationError || error instanceof NotFoundError) {
+  if (
+    error instanceof ValidationError ||
+    error instanceof NotFoundError ||
+    error instanceof UnauthorizedError
+  ) {
     return res.status(error.statusCode).json(error);
   }
 
   const publicErrorObject = new InternalServerError({
-    statusCode: error.statusCode,
     cause: error,
   });
 
