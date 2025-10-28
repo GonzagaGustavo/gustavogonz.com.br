@@ -1,9 +1,9 @@
 import { version as uuidVersion } from 'uuid';
 import setCookieParser from 'set-cookie-parser';
+import { IncomingMessage } from 'node:http';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import orchestrator from '~/../tests/orchestrator';
 import session from '~/models/session';
-import { IncomingMessage } from 'http';
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
