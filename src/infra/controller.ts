@@ -17,11 +17,12 @@ function onNoMatchHandler(req: NextApiRequest, res: NextApiResponse) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onErrorHandler(error: any, req: NextApiRequest, res: NextApiResponse) {
-  if (
-    error instanceof ValidationError ||
-    error instanceof NotFoundError ||
-    error instanceof UnauthorizedError
-  ) {
+  if (error instanceof ValidationError || error instanceof NotFoundError) {
+    return res.status(error.statusCode).json(error);
+  }
+
+  if (error instanceof UnauthorizedError) {
+    clearSessionCookie(res);
     return res.status(error.statusCode).json(error);
   }
 
