@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
-import * as cookie from 'cookie';
 import controller from '~/infra/controller';
 
 import authentication from '~/models/authentication';
@@ -22,13 +21,7 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse) {
 
   const newSession = await session.create(authenticatedUser.id);
 
-  const setCookie = cookie.serialize('session_id', newSession.token, {
-    path: '/',
-    maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-  });
-  res.setHeader('Set-Cookie', setCookie);
+  await controller.setSessionCookie(res, newSession.token);
 
   return res.status(201).json(newSession);
 }
