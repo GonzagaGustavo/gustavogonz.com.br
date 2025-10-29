@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 
 import controller from '~/infra/controller';
-import { UnauthorizedError } from '~/infra/errors';
 import session from '~/models/session';
 import user from '~/models/user';
 
@@ -17,7 +16,7 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse) {
 
   const sessionObject = await session.findOneValidByToken(sessionToken);
   const renewedSessionObject = await session.renew(sessionObject.id);
-  await controller.setSessionCookie(res, renewedSessionObject.token);
+  controller.setSessionCookie(res, renewedSessionObject.token);
 
   const userFound = await user.findOneById(sessionObject.user_id);
 
