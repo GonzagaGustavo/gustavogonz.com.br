@@ -34,10 +34,20 @@ function onErrorHandler(error: any, req: NextApiRequest, res: NextApiResponse) {
   res.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
-async function setSessionCookie(res: NextApiResponse, sessionToken: string) {
+function setSessionCookie(res: NextApiResponse, sessionToken: string) {
   const setCookie = cookie.serialize('session_id', sessionToken, {
     path: '/',
     maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+  });
+  res.setHeader('Set-Cookie', setCookie);
+}
+
+function clearSessionCookie(res: NextApiResponse) {
+  const setCookie = cookie.serialize('session_id', 'invalid', {
+    path: '/',
+    maxAge: -1,
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
   });
@@ -50,6 +60,7 @@ const controller = {
     onError: onErrorHandler,
   },
   setSessionCookie,
+  clearSessionCookie,
 };
 
 export default controller;
