@@ -13,7 +13,16 @@ type Session = {
   updated_at: Date;
 };
 
-async function findOneValidByToken(sessionToken: string): Promise<Session> {
+async function findOneValidByToken(
+  sessionToken: string | undefined,
+): Promise<Session> {
+  if (!sessionToken) {
+    throw new UnauthorizedError({
+      message: 'Usuário não possui sessão ativa.',
+      action: 'Verifique se o usuário está autenticado e tente novamente.',
+    });
+  }
+
   const sessionFound = await runSelectQuery(sessionToken);
 
   return sessionFound;
@@ -99,10 +108,35 @@ async function renew(sessionId: string): Promise<Session> {
   }
 }
 
+async function expireById(sessionId: string): Promise<Session> {
+  const expiredSession = await runUpdateQuery(sessionId);
+  return expiredSession;
+
+  async function runUpdateQuery(sessionId: string) {
+    const results = await database.query({
+      text: `
+        UPDATE
+          sessions
+        SET
+          expires_at = NOW(),
+          updated_at = NOW()
+        WHERE
+          id = $1
+        RETURNING
+          *
+        ;`,
+      values: [sessionId],
+    });
+
+    return results.rows[0];
+  }
+}
+
 const session = {
   findOneValidByToken,
   create,
   renew,
+  expireById,
   EXPIRATION_IN_MILLISECONDS,
 };
 
